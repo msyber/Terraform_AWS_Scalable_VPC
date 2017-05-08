@@ -1,6 +1,5 @@
-Modular, scalable virtual networking foundation with Amazon VPC
-
-# Terraform_AWS_Scalable_VPC
+## Terraform_AWS_Scalable_VPC
+> version 0.1
 
 This Terraform template deploys an Amazon Virtual Private Cloud (Amazon VPC) according to AWS best practices and guidelines.
 
