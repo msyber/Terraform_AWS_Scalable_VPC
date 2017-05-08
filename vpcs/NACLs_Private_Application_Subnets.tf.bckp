@@ -1,0 +1,153 @@
+#
+# --- Network ACL Rules for the Private Application Subnets ---
+#
+
+# Private Application Subnets ids
+data "aws_subnet_ids" "private_application_subnets_ids" {
+  vpc_id = "${aws_vpc.VPC.id}"
+  tags {
+    Network = "Private_Application_Subnets"
+  }
+}
+
+# Create Network ACL for Private Application Subnets
+resource "aws_network_acl" "NACLs_Private_Application_Subnet" {
+  depends_on     = ["aws_subnet.PrivateSubnet"]
+  vpc_id         = "${aws_vpc.VPC.id}"
+  subnet_ids     = ["${data.aws_subnet_ids.private_application_subnets_ids.ids}"]
+  tags {
+    Name = "NACLs_Private_Application_Subnet"
+  }
+}
+
+# Allows inbound HTTP traffic from any IPv4 Private Subnet address
+resource "aws_network_acl_rule" "Private_Application_subnet_Allow_inbound_HTTP" {
+  network_acl_id = "${aws_network_acl.NACLs_Private_Application_Subnet.id}"
+  rule_number    = 100
+  egress         = false
+  protocol       = "tcp"
+  rule_action    = "allow"
+  cidr_block     = "${var.VPCCIDR_PublicSubnet}"
+  from_port      = 80
+  to_port        = 80
+}
+
+# Allows inbound HTTPS traffic from any IPv4 Private Subnet address
+resource "aws_network_acl_rule" "Private_Application_subnet_Allow_inbound_HTTPS" {
+  network_acl_id = "${aws_network_acl.NACLs_Private_Application_Subnet.id}"
+  rule_number    = 110
+  egress         = false
+  protocol       = "tcp"
+  rule_action    = "allow"
+  cidr_block     = "${var.VPCCIDR_PublicSubnet}"
+  from_port      = 443
+  to_port        = 443
+}
+
+# Allows inbound SSH traffic from any IPv4 Private Subnet address
+resource "aws_network_acl_rule" "Private_Application_subnet_Allow_inbound_SSH" {
+  network_acl_id = "${aws_network_acl.NACLs_Private_Application_Subnet.id}"
+  rule_number    = 120
+  egress         = false
+  protocol       = "tcp"
+  rule_action    = "allow"
+  cidr_block     = "${var.VPCCIDR_PublicSubnet}"
+  from_port      = 22
+  to_port        = 22
+}
+
+# Allows inbound RDP traffic from any IPv4 Private Subnet address
+resource "aws_network_acl_rule" "Private_Application_subnet_Allow_inbound_RDP" {
+  network_acl_id = "${aws_network_acl.NACLs_Private_Application_Subnet.id}"
+  rule_number    = 130
+  egress         = false
+  protocol       = "tcp"
+  rule_action    = "allow"
+  cidr_block     = "${var.VPCCIDR_PublicSubnet}"
+  from_port      = 3389
+  to_port        = 3389
+}
+
+# Allows inbound return traffic from requests originating in the subnet
+resource "aws_network_acl_rule" "Private_Application_subnet_Allow_inbound_ReturnTraffic" {
+  network_acl_id = "${aws_network_acl.NACLs_Private_Application_Subnet.id}"
+  rule_number    = 140
+  egress         = false
+  protocol       = "tcp"
+  rule_action    = "allow"
+  cidr_block     = "${var.VPCCIDR}"
+  from_port      = 1024
+  to_port        = 65535
+}
+
+# Allows outbound HTTP traffic from the subnet to the Public Subnet
+resource "aws_network_acl_rule" "Private_Application_subnet_Allow_outbound_HTTP" {
+  network_acl_id = "${aws_network_acl.NACLs_Private_Application_Subnet.id}"
+  rule_number    = 100
+  egress         = true
+  protocol       = "tcp"
+  rule_action    = "allow"
+  cidr_block     = "${var.VPCCIDR_PublicSubnet}"
+  from_port      = 80
+  to_port        = 80
+}
+
+# Allows outbound HTTPS traffic from the subnet to the Public Subnet
+resource "aws_network_acl_rule" "Private_Application_subnet_Allow_outbound_HTTPS" {
+  network_acl_id = "${aws_network_acl.NACLs_Private_Application_Subnet.id}"
+  rule_number    = 110
+  egress         = true
+  protocol       = "tcp"
+  rule_action    = "allow"
+  cidr_block     = "${var.VPCCIDR_PublicSubnet}"
+  from_port      = 443
+  to_port        = 443
+}
+
+# Allows outbound MS SQL access to database servers in the private database subnet
+resource "aws_network_acl_rule" "Private_Application_subnet_Allow_outbound_MSSQL" {
+  network_acl_id = "${aws_network_acl.NACLs_Private_Application_Subnet.id}"
+  rule_number    = 120
+  egress         = true
+  protocol       = "tcp"
+  rule_action    = "allow"
+  cidr_block     = "${var.VPCCIDR_PrivateSubnetDatabase}"
+  from_port      = 1433
+  to_port        = 1433
+}
+
+# Allows outbound MySQL access to database servers in the private database subnet
+resource "aws_network_acl_rule" "Private_Application_subnet_Allow_outbound_MySQL" {
+  network_acl_id = "${aws_network_acl.NACLs_Private_Application_Subnet.id}"
+  rule_number    = 130
+  egress         = true
+  protocol       = "tcp"
+  rule_action    = "allow"
+  cidr_block     = "${var.VPCCIDR_PrivateSubnetDatabase}"
+  from_port      = 3306
+  to_port        = 3306
+}
+
+# Allows outbound PostgreSQL access to database servers in the private database subnet
+resource "aws_network_acl_rule" "Private_Application_subnet_Allow_outbound_PostgreSQL" {
+  network_acl_id = "${aws_network_acl.NACLs_Private_Application_Subnet.id}"
+  rule_number    = 140
+  egress         = true
+  protocol       = "tcp"
+  rule_action    = "allow"
+  cidr_block     = "${var.VPCCIDR_PrivateSubnetDatabase}"
+  from_port      = 5432
+  to_port        = 5432
+}
+
+# Allows outbound responses to clients on CIDR block and Internet
+resource "aws_network_acl_rule" "Private_Application_subnet_Allow_outbound_Internet" {
+  network_acl_id = "${aws_network_acl.NACLs_Private_Application_Subnet.id}"
+  rule_number    = 150
+  egress         = true
+  protocol       = "tcp"
+  rule_action    = "allow"
+  cidr_block     = "${var.VPCCIDR}"
+  from_port      = 1024
+  to_port        = 65535
+}
