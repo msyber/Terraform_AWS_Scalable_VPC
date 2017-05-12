@@ -4,6 +4,6 @@
 
 # Variables for the Scalable VPC module
 aws_region               = "eu-west-1"
-NumberOfAZs              = "3"
+NumberOfAZs              = "2"
 VPCTag                   = "MyVPC"
-nat_gateway_enabled      = "1"
+nat_gateway_enabled      = "0"

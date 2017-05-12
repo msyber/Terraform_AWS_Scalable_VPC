@@ -149,8 +149,3 @@ resource "aws_subnet" "PrivateSubnetDatabase" {
     Network              = "Private_Database_Subnets"
   }
 }
-
-
-#
-# --- Outputs ---
-#
