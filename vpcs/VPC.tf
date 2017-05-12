@@ -155,11 +155,6 @@ resource "aws_subnet" "PrivateSubnetDatabase" {
 # --- Outputs ---
 #
 
-# VPC id
-output "o_VPC_vpcid" {
-  value                = "${aws_vpc.VPC.id}"
-}
-
 # Public Subnets ids
 data "aws_subnet_ids" "public_subnets" {
   vpc_id = "${aws_vpc.VPC.id}"
