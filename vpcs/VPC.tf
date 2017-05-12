@@ -154,36 +154,3 @@ resource "aws_subnet" "PrivateSubnetDatabase" {
 #
 # --- Outputs ---
 #
-
-# Public Subnets ids
-data "aws_subnet_ids" "public_subnets" {
-  vpc_id = "${aws_vpc.VPC.id}"
-  tags {
-    Network = "Public"
-  }
-}
-output "o_Public_Subnet_IDs" {
-  value = ["${data.aws_subnet_ids.public_subnets.*.ids}"]
-}
-
-## Private_Application_Subnets ids
-#data "aws_subnet_ids" "private_application_subnets" {
-#  vpc_id = "${aws_vpc.VPC.id}"
-#  tags {
-#    Network = "Private_Application_Subnets"
-#  }
-#}
-#output "o_Private_Application_Subnet_IDs" {
-#  value = ["${data.aws_subnet_ids.private_application_subnets.*.ids}"]
-#}
-
-## Private_Database_Subnets ids
-#data "aws_subnet_ids" "private_database_subnets" {
-#  vpc_id = "${aws_vpc.VPC.id}"
-#  tags {
-#    Network = "Private_Database_Subnets"
-#  }
-#}
-#output "o_Private_Database_Subnet_IDs" {
-#  value = ["${data.aws_subnet_ids.private_database_subnets.*.ids}"]
-#}
