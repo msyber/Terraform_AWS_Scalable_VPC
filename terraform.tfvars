@@ -6,4 +6,4 @@
 aws_region               = "eu-west-1"
 NumberOfAZs              = "2"
 VPCTag                   = "MyVPC"
-nat_gateway_enabled      = "0"
+nat_gateway_enabled      = "1"
